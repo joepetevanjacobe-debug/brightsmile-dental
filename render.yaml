@@ -1,0 +1,48 @@
+# Render Blueprint for BrightSmile Dental
+# Deploy: Render Dashboard -> New -> Blueprint -> connect this repo
+# Database (MySQL) is hosted separately on Aiven (free) - see DEPLOY.md
+
+services:
+  # ---------- Backend: Spring Boot API (Docker) ----------
+  - name: brightsmile-api
+    type: web
+    runtime: docker
+    rootDir: brightsmile-api
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    region: oregon
+    envVars:
+      # Keep the JVM inside the 512MB free-tier limit
+      - key: JAVA_TOOL_OPTIONS
+        value: -XX:MaxRAMPercentage=70.0
+      # --- Database (paste values from your Aiven MySQL service) ---
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      # --- Auth secret (Render auto-generates a strong one) ---
+      - key: JWT_SECRET
+        generateValue: true
+      # --- Frontend URL for CORS (paste the static site URL after first deploy) ---
+      - key: APP_FRONTEND_URL
+        sync: false
+
+  # ---------- Frontend: React + Vite (Static Site) ----------
+  - name: brightsmile-web
+    type: web
+    runtime: static
+    rootDir: brightsmile-web
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    routes:
+      # SPA fallback so React Router deep links work
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      # Backend API URL (paste the brightsmile-api URL after it deploys)
+      - key: VITE_API_URL
+        sync: false
