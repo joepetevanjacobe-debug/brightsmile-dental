@@ -1,0 +1,29 @@
+# Secrets / environment
+.env
+.env.local
+*.local
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build output
+dist/
+build/
+.next/
+out/
+target/
+**/target/
+
+# Logs
+*.log
+backend.log
+frontend.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+
+# Misc
+*.tmp
+coverage/

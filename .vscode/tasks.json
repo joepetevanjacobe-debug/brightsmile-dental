@@ -1,0 +1,56 @@
+{
+  // Run these from:  Terminal → Run Task…   (or  Ctrl+Shift+P → "Tasks: Run Task")
+  // "Start Website" launches both the backend and frontend together.
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Backend: Spring Boot (api :8080)",
+      "type": "shell",
+      "command": "& \"C:\\Users\\Joepet Evan\\.maven\\maven-3.9.16\\bin\\mvn.cmd\" spring-boot:run",
+      "options": {
+        "cwd": "${workspaceFolder}/brightsmile-api",
+        "env": {
+          "JAVA_HOME": "C:\\Users\\Joepet Evan\\AppData\\Local\\jdks\\jdk-21.0.10",
+          "SPRING_DATASOURCE_URL": "jdbc:mysql://localhost:3306/brightsmile?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
+          "SPRING_DATASOURCE_USERNAME": "root",
+          "SPRING_DATASOURCE_PASSWORD": "Jacobe123!"
+        }
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "group": "website",
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Frontend: Vite (web :3000)",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": {
+        "cwd": "${workspaceFolder}/brightsmile-web"
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "group": "website",
+        "panel": "dedicated",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Start Website (Backend + Frontend)",
+      "dependsOn": [
+        "Backend: Spring Boot (api :8080)",
+        "Frontend: Vite (web :3000)"
+      ],
+      "dependsOrder": "parallel",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}

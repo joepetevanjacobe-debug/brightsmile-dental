@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(docker --version 2>&1)",
+      "PowerShell(mysql --version 2>&1)"
+    ]
+  }
+}

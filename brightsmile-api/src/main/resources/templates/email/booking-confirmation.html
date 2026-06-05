@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <style>
+    body { font-family: 'DM Sans', Arial, sans-serif; background: #f5f7fa; margin: 0; padding: 0; }
+    .container { max-width: 580px; margin: 40px auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+    .header { background: #1E6FBF; padding: 32px 40px; text-align: center; }
+    .header h1 { color: #ffffff; margin: 0; font-size: 24px; font-weight: 700; }
+    .header p { color: rgba(255,255,255,0.85); margin: 4px 0 0; font-size: 14px; }
+    .body { padding: 36px 40px; }
+    .body h2 { color: #1a1a2e; font-size: 20px; margin-top: 0; }
+    .details { background: #f0f7ff; border-radius: 8px; padding: 20px 24px; margin: 24px 0; }
+    .details p { margin: 8px 0; color: #333; font-size: 15px; }
+    .details strong { color: #1E6FBF; }
+    .cta { text-align: center; margin: 32px 0 16px; }
+    .cta a { background: #1E6FBF; color: #fff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 15px; }
+    .footer { background: #f5f7fa; padding: 20px 40px; text-align: center; }
+    .footer p { color: #888; font-size: 12px; margin: 4px 0; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>BrightSmile Dental</h1>
+    <p>Your smile is our priority</p>
+  </div>
+  <div class="body">
+    <h2>Appointment Confirmed!</h2>
+    <p>Hi <strong th:text="${patientName}">Patient</strong>,</p>
+    <p>Your appointment has been confirmed. We look forward to seeing you!</p>
+    <div class="details">
+      <p><strong>Service:</strong> <span th:text="${serviceName}">Service</span></p>
+      <p><strong>Doctor:</strong> Dr. <span th:text="${doctorName}">Doctor</span></p>
+      <p><strong>Date &amp; Time:</strong> <span th:text="${datetime}">Date</span></p>
+      <p><strong>Appointment ID:</strong> #<span th:text="${appointmentId}">000</span></p>
+    </div>
+    <p>Please arrive 10 minutes early. If you need to reschedule, you can do so from your patient portal up to 24 hours before your appointment.</p>
+    <div class="cta">
+      <a th:href="${frontendUrl + '/portal'}">View My Appointments</a>
+    </div>
+  </div>
+  <div class="footer">
+    <p>BrightSmile Dental &bull; 123 Smile Avenue, New York, NY 10001</p>
+    <p>Phone: (555) 123-4567 &bull; Email: hello@brightsmile.com</p>
+  </div>
+</div>
+</body>
+</html>

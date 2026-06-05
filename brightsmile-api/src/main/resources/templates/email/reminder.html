@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f5f7fa; margin: 0; padding: 0; }
+    .container { max-width: 580px; margin: 40px auto; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+    .header { background: #D4A943; padding: 32px 40px; text-align: center; }
+    .header h1 { color: #fff; margin: 0; font-size: 22px; }
+    .body { padding: 36px 40px; }
+    .details { background: #fffbf0; border: 1px solid #D4A943; border-radius: 8px; padding: 20px 24px; margin: 24px 0; }
+    .details p { margin: 8px 0; color: #333; }
+    .details strong { color: #b8892e; }
+    .cta { text-align: center; margin: 32px 0; }
+    .cta a { background: #1E6FBF; color: #fff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; }
+    .footer { background: #f5f7fa; padding: 20px 40px; text-align: center; }
+    .footer p { color: #888; font-size: 12px; margin: 4px 0; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Appointment Reminder</h1>
+  </div>
+  <div class="body">
+    <p>Hi <strong th:text="${patientName}">Patient</strong>,</p>
+    <p>This is a friendly reminder that your appointment is <strong th:text="${timeLabel}">tomorrow</strong>.</p>
+    <div class="details">
+      <p><strong>Service:</strong> <span th:text="${serviceName}">Service</span></p>
+      <p><strong>Doctor:</strong> Dr. <span th:text="${doctorName}">Doctor</span></p>
+      <p><strong>Date &amp; Time:</strong> <span th:text="${datetime}">Date</span></p>
+    </div>
+    <p>Please remember to bring your insurance card and arrive 10 minutes early.</p>
+    <div class="cta">
+      <a th:href="${frontendUrl + '/portal'}">Manage Appointment</a>
+    </div>
+  </div>
+  <div class="footer">
+    <p>BrightSmile Dental &bull; 123 Smile Avenue, New York, NY 10001</p>
+    <p>Phone: (555) 123-4567</p>
+  </div>
+</div>
+</body>
+</html>
