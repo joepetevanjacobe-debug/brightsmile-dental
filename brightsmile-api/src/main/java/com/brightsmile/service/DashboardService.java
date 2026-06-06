@@ -25,18 +25,19 @@ public class DashboardService {
     public DashboardStats getStats() {
         LocalDateTime todayStart = LocalDate.now().atStartOfDay();
         LocalDateTime todayEnd = todayStart.plusDays(1);
+        LocalDateTime weekStart = LocalDate.now().with(java.time.DayOfWeek.MONDAY).atStartOfDay();
         LocalDateTime monthStart = LocalDate.now().withDayOfMonth(1).atStartOfDay();
+        LocalDateTime yearStart = LocalDate.now().withDayOfYear(1).atStartOfDay();
         LocalDateTime now = LocalDateTime.now();
 
         long todayCount = appointmentRepository.countInRange(todayStart, todayEnd);
         long newPatientsMonth = userRepository.countByRoleAndCreatedAtAfter(User.Role.PATIENT, monthStart);
 
-        // Revenue: sum of completed appointments this month
-        List<Appointment> monthAppointments = appointmentRepository.findActiveInRange(monthStart, now);
-        BigDecimal revenue = monthAppointments.stream()
-                .filter(a -> a.getStatus() == Appointment.Status.COMPLETED)
-                .map(a -> a.getService().getPrice())
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        // Revenue: sum of COMPLETED appointments per period (day / week / month / year)
+        BigDecimal revenueToday = appointmentRepository.sumCompletedRevenueInRange(todayStart, todayEnd);
+        BigDecimal revenueWeek = appointmentRepository.sumCompletedRevenueInRange(weekStart, now);
+        BigDecimal revenue = appointmentRepository.sumCompletedRevenueInRange(monthStart, now);
+        BigDecimal revenueYear = appointmentRepository.sumCompletedRevenueInRange(yearStart, now);
 
         long totalMonth = appointmentRepository.countInRange(monthStart, now);
         long cancelledMonth = appointmentRepository.countCancelledInRange(monthStart, now);
@@ -68,7 +69,10 @@ public class DashboardService {
         return DashboardStats.builder()
                 .todayAppointments(todayCount)
                 .newPatientsThisMonth(newPatientsMonth)
+                .totalRevenueToday(revenueToday)
+                .totalRevenueThisWeek(revenueWeek)
                 .totalRevenueThisMonth(revenue)
+                .totalRevenueThisYear(revenueYear)
                 .cancellationRate(Math.round(cancellationRate * 10.0) / 10.0)
                 .appointmentsLast30Days(daily)
                 .serviceBreakdown(breakdown)

@@ -33,6 +33,11 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     @Query("SELECT COUNT(a) FROM Appointment a WHERE a.startDatetime BETWEEN :start AND :end AND a.status = 'CANCELLED'")
     long countCancelledInRange(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
+    @Query("SELECT COALESCE(SUM(a.service.price), 0) FROM Appointment a " +
+           "WHERE a.status = 'COMPLETED' AND a.startDatetime BETWEEN :start AND :end")
+    java.math.BigDecimal sumCompletedRevenueInRange(
+            @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
     @Query("SELECT a FROM Appointment a WHERE a.status = :status AND a.startDatetime BETWEEN :start AND :end AND a.reminderSent = false")
     List<Appointment> findForReminder(
             @Param("status") Appointment.Status status,

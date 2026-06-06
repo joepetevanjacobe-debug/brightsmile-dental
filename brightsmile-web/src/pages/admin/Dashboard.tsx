@@ -110,11 +110,24 @@ export default function Dashboard() {
             {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <StatsCard title="Today's Appointments" value={stats?.todayAppointments ?? 0} icon={Calendar} color="brand" delay={0} />
             <StatsCard title="New Patients (Month)" value={stats?.newPatientsThisMonth ?? 0} icon={Users} color="green" delay={0.1} />
+            <StatsCard title="Cancellation Rate" value={`${stats?.cancellationRate ?? 0}%`} icon={TrendingDown} color="red" delay={0.2} />
+          </div>
+        )}
+
+        {/* Revenue breakdown — completed appointments */}
+        {isLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <StatsCard title="Revenue (Today)" value={`₱${Number(stats?.totalRevenueToday ?? 0).toLocaleString()}`} icon={Wallet} color="gold" delay={0} />
+            <StatsCard title="Revenue (Week)" value={`₱${Number(stats?.totalRevenueThisWeek ?? 0).toLocaleString()}`} icon={Wallet} color="gold" delay={0.1} />
             <StatsCard title="Revenue (Month)" value={`₱${Number(stats?.totalRevenueThisMonth ?? 0).toLocaleString()}`} icon={Wallet} color="gold" delay={0.2} />
-            <StatsCard title="Cancellation Rate" value={`${stats?.cancellationRate ?? 0}%`} icon={TrendingDown} color="red" delay={0.3} />
+            <StatsCard title="Revenue (Year)" value={`₱${Number(stats?.totalRevenueThisYear ?? 0).toLocaleString()}`} icon={Wallet} color="gold" delay={0.3} />
           </div>
         )}
 

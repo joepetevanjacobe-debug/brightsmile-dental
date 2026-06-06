@@ -11,7 +11,10 @@ import java.util.List;
 public class DashboardStats {
     private long todayAppointments;
     private long newPatientsThisMonth;
+    private BigDecimal totalRevenueToday;
+    private BigDecimal totalRevenueThisWeek;
     private BigDecimal totalRevenueThisMonth;
+    private BigDecimal totalRevenueThisYear;
     private double cancellationRate;
     private List<DailyCount> appointmentsLast30Days;
     private List<ServiceBreakdown> serviceBreakdown;
