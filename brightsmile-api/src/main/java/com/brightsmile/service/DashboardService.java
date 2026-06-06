@@ -33,11 +33,13 @@ public class DashboardService {
         long todayCount = appointmentRepository.countInRange(todayStart, todayEnd);
         long newPatientsMonth = userRepository.countByRoleAndCreatedAtAfter(User.Role.PATIENT, monthStart);
 
-        // Revenue: sum of COMPLETED appointments per period (day / week / month / year)
+        // Revenue: sum of COMPLETED appointments per period (day / week / month / year).
+        // All periods end at end-of-today so today's revenue is always included in the
+        // wider windows (an appointment completed later today still counts everywhere).
         BigDecimal revenueToday = appointmentRepository.sumCompletedRevenueInRange(todayStart, todayEnd);
-        BigDecimal revenueWeek = appointmentRepository.sumCompletedRevenueInRange(weekStart, now);
-        BigDecimal revenue = appointmentRepository.sumCompletedRevenueInRange(monthStart, now);
-        BigDecimal revenueYear = appointmentRepository.sumCompletedRevenueInRange(yearStart, now);
+        BigDecimal revenueWeek = appointmentRepository.sumCompletedRevenueInRange(weekStart, todayEnd);
+        BigDecimal revenue = appointmentRepository.sumCompletedRevenueInRange(monthStart, todayEnd);
+        BigDecimal revenueYear = appointmentRepository.sumCompletedRevenueInRange(yearStart, todayEnd);
 
         long totalMonth = appointmentRepository.countInRange(monthStart, now);
         long cancelledMonth = appointmentRepository.countCancelledInRange(monthStart, now);
