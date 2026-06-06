@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Calendar, Users, Wallet, TrendingDown, CalendarPlus, UserPlus, Clock, X } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts'
@@ -21,6 +22,7 @@ export default function Dashboard() {
   const [patientModal, setPatientModal] = useState(false)
   const [apptForm, setApptForm] = useState<any>(EMPTY_APPT)
   const [patientForm, setPatientForm] = useState<any>(EMPTY_PATIENT)
+  const [revenuePeriod, setRevenuePeriod] = useState<'today' | 'week' | 'month' | 'year'>('today')
 
   const { data, isLoading } = useQuery({
     queryKey: ['admin-stats'],
@@ -117,18 +119,57 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Revenue breakdown — completed appointments */}
+        {/* Revenue — pick a period (completed appointments only) */}
         {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}
-          </div>
+          <SkeletonCard />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatsCard title="Revenue (Today)" value={`₱${Number(stats?.totalRevenueToday ?? 0).toLocaleString()}`} icon={Wallet} color="gold" delay={0} />
-            <StatsCard title="Revenue (Week)" value={`₱${Number(stats?.totalRevenueThisWeek ?? 0).toLocaleString()}`} icon={Wallet} color="gold" delay={0.1} />
-            <StatsCard title="Revenue (Month)" value={`₱${Number(stats?.totalRevenueThisMonth ?? 0).toLocaleString()}`} icon={Wallet} color="gold" delay={0.2} />
-            <StatsCard title="Revenue (Year)" value={`₱${Number(stats?.totalRevenueThisYear ?? 0).toLocaleString()}`} icon={Wallet} color="gold" delay={0.3} />
-          </div>
+          (() => {
+            const periods = [
+              { key: 'today' as const, label: 'Today', value: stats?.totalRevenueToday },
+              { key: 'week' as const, label: 'This Week', value: stats?.totalRevenueThisWeek },
+              { key: 'month' as const, label: 'This Month', value: stats?.totalRevenueThisMonth },
+              { key: 'year' as const, label: 'This Year', value: stats?.totalRevenueThisYear },
+            ]
+            const active = periods.find(p => p.key === revenuePeriod) ?? periods[0]
+            return (
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                className="bg-white rounded-card shadow-card p-6"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 rounded-xl bg-amber-50 text-amber-600">
+                      <Wallet size={22} />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500 font-medium">Revenue ({active.label})</p>
+                      <p className="text-3xl font-bold text-gray-900 mt-0.5">
+                        ₱{Number(active.value ?? 0).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                  {/* Period selector */}
+                  <div className="inline-flex rounded-lg bg-gray-100 p-1">
+                    {periods.map(p => (
+                      <button
+                        key={p.key}
+                        onClick={() => setRevenuePeriod(p.key)}
+                        className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                          revenuePeriod === p.key
+                            ? 'bg-white text-brand-600 shadow-sm'
+                            : 'text-gray-500 hover:text-gray-700'
+                        }`}
+                      >
+                        {p.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            )
+          })()
         )}
 
         {/* Charts row */}
